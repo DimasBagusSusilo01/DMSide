@@ -1,7 +1,7 @@
-const {
+import {
     HandLandmarker,
     FilesetResolver
-} = globalThis;
+} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.mjs";
 
 const video = document.getElementById("camera");
 const canvas = document.getElementById("canvas");
