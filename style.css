@@ -17,11 +17,13 @@ header {
     background: #1b1b1b;
 }
 
-button {
+#startCamera {
     padding: 10px 16px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    position: relative;
+    z-index: 10;
 }
 
 main {
