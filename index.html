@@ -3,113 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>HandTrack IDE</title>
-    <!--<link rel="stylesheet" href="style.css">//-->
-    <style>
-        * {
-    box-sizing: border-box;
-}
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #111;
-    color: white;
-}
 
-header {
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    background: #1b1b1b;
-}
+    <link rel="stylesheet" href="style.css">
 
-button {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-main {
-    display: grid;
-    grid-template-columns: 1fr 350px;
-    gap: 15px;
-    padding: 15px;
-}
-
-.preview {
-    position: relative;
-    width: 100%;
-    max-width: 900px;
-    margin: auto;
-    background: black;
-}
-
-video {
-    width: 100%;
-    display: block;
-}
-
-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.console {
-    background: #1b1b1b;
-    padding: 15px;
-    border-radius: 8px;
-    overflow: auto;
-}
-
-pre {
-    white-space: pre-wrap;
-}
-    </style>
+    <script
+        type="module"
+        src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.mjs"
+        crossorigin="anonymous">
+    </script>
 </head>
 
 <body>
 
-    <header>
-        <h1>HandTrack IDE</h1>
+    <h1>HandTrack IDE</h1>
 
-        <button id="startCamera">
-            Start Camera
-        </button>
-    </header>
+    <button id="startCamera">
+        Start Camera
+    </button>
 
-    <main>
+    <div id="preview">
+        <video id="camera" autoplay playsinline muted></video>
+        <canvas id="canvas"></canvas>
+    </div>
 
-        <section class="preview">
-
-            <video
-                id="camera"
-                autoplay
-                playsinline
-                muted>
-            </video>
-
-            <canvas id="overlay"></canvas>
-
-        </section>
-
-        <section class="console">
-
-            <h2>Tracking Data</h2>
-
-            <pre id="output">
-Camera belum aktif.
-            </pre>
-
-        </section>
-
-    </main>
+    <pre id="output">Belum aktif</pre>
 
     <script type="module" src="app.js"></script>
+
 </body>
 </html>
