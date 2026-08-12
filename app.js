@@ -126,8 +126,6 @@ Z: ${index.z.toFixed(3)}`;
 
 button.addEventListener("click", async () => {
 
-    button.disabled = true;
-
     await createHandTracker();
 
     await startCamera();
