@@ -131,3 +131,110 @@ button.addEventListener("click", async () => {
     await startCamera();
 
 });
+
+
+// =====================================
+// MOBILE NAVIGATION
+// =====================================
+
+const mobileButtons =
+    document.querySelectorAll(
+        ".mobile-nav-button"
+    );
+
+const toolbox =
+    document.getElementById(
+        "toolboxPanel"
+    );
+
+const inspector =
+    document.querySelector(
+        ".inspector-panel"
+    );
+
+const centerArea =
+    document.querySelector(
+        ".center-area"
+    );
+
+
+mobileButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            mobileButtons.forEach(
+                btn =>
+                    btn.classList.remove(
+                        "active"
+                    )
+            );
+
+            button.classList.add(
+                "active"
+            );
+
+            const panel =
+                button.dataset.panel;
+
+
+            if (window.innerWidth > 700) {
+                return;
+            }
+
+
+            // BLOCKS
+
+            if (panel === "blocks") {
+
+                toolbox.style.display =
+                    "block";
+
+                centerArea.style.display =
+                    "none";
+
+                inspector.style.display =
+                    "none";
+
+            }
+
+
+            // PREVIEW
+
+            if (panel === "preview") {
+
+                toolbox.style.display =
+                    "none";
+
+                centerArea.style.display =
+                    "flex";
+
+                inspector.style.display =
+                    "none";
+
+            }
+
+
+            // SETTINGS
+
+            if (panel === "inspector") {
+
+                toolbox.style.display =
+                    "none";
+
+                centerArea.style.display =
+                    "none";
+
+                inspector.style.display =
+                    "block";
+
+                inspector.style.height =
+                    "100%";
+
+            }
+
+        }
+    );
+
+});
