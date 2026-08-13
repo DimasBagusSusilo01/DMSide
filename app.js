@@ -56,11 +56,21 @@ async function startCamera() {
 
     await video.play();
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    resizeCanvas();
 
     detectHands();
 }
+
+function resizeCanvas() {
+
+    if (!video.videoWidth || !video.videoHeight) {
+        return;
+    }
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+}
+
 
 function detectHands() {
 

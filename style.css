@@ -504,6 +504,8 @@ body {
 
     display: block;
 
+    transform: scaleX(-1);
+
 }
 
 
