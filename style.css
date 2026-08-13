@@ -521,6 +521,7 @@ body {
 
     pointer-events: none;
     z-index: 20;
+    transform: scaleX(-1);
 
 }
 
