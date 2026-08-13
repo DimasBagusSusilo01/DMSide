@@ -127,36 +127,31 @@ function drawHands(results) {
     }
 
 
-    const landmarks =
-        results.landmarks[0];
+    for (const landmarks of results.landmarks) {
 
-
-    for (const point of landmarks) {
-
-        const x =
-            point.x * canvas.width;
-
-        const y =
-            point.y * canvas.height;
-
-
-        ctx.beginPath();
-
-        ctx.fillStyle =
-            "#00ff88";
-
-        ctx.arc(
-            x,
-            y,
-            7,
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
+        for (const point of landmarks) {
+    
+            const x =
+                point.x * canvas.width;
+    
+            const y =
+                point.y * canvas.height;
+    
+            ctx.beginPath();
+    
+            ctx.fillStyle = "#00ff88";
+    
+            ctx.arc(
+                x,
+                y,
+                6,
+                0,
+                Math.PI * 2
+            );
+    
+            ctx.fill();
+        }
     }
-
 
     const index =
         landmarks[8];
