@@ -99,48 +99,40 @@ function drawHands(results) {
         canvas.height
     );
 
-    // TES CANVAS
-    ctx.fillStyle = "#ff0000";
 
-    ctx.beginPath();
-
-    ctx.arc(
-        100,
-        100,
-        20,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-
+    // Tidak ada tangan
     if (!results.landmarks?.length) {
 
-        const output = document.getElementById("handStatus");
-
         if (output) {
-    output.textContent = "Tidak ada tangan";
-}
+            output.textContent =
+                "Tidak ada tangan";
+        }
 
         return;
     }
 
 
-    for (const landmarks of results.landmarks) {
+    // Gambar SEMUA tangan
+    for (
+        const landmarks
+        of results.landmarks
+    ) {
 
+        // 21 titik landmark
         for (const point of landmarks) {
-    
+
             const x =
                 point.x * canvas.width;
-    
+
             const y =
                 point.y * canvas.height;
-    
+
+
             ctx.beginPath();
-    
-            ctx.fillStyle = "#00ff88";
-    
+
+            ctx.fillStyle =
+                "#00ff88";
+
             ctx.arc(
                 x,
                 y,
@@ -148,25 +140,23 @@ function drawHands(results) {
                 0,
                 Math.PI * 2
             );
-    
+
             ctx.fill();
+
         }
+
     }
 
-    const index =
-        landmarks[8];
 
+    // Status
+    if (output) {
 
-        if (output) {
-            output.textContent =
-        `Index Finger
-        
-        X: ${index.x.toFixed(3)}
-        Y: ${index.y.toFixed(3)}
-        Z: ${index.z.toFixed(3)}`;
-        }
+        output.textContent =
+            `${results.landmarks.length} hand(s) detected`;
+
+    }
+
 }
-
 button.addEventListener("click", async () => {
 
     await createHandTracker();
