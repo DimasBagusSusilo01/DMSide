@@ -117,8 +117,11 @@ function drawHands(results) {
 
     if (!results.landmarks?.length) {
 
-        output.textContent =
-            "Tidak ada tangan";
+        const output = document.getElementById("handStatus");
+
+        if (output) {
+    output.textContent = "Tidak ada tangan";
+}
 
         return;
     }
@@ -159,12 +162,14 @@ function drawHands(results) {
         landmarks[8];
 
 
-    output.textContent =
-`Index Finger
-
-X: ${index.x.toFixed(3)}
-Y: ${index.y.toFixed(3)}
-Z: ${index.z.toFixed(3)}`;
+        if (output) {
+            output.textContent =
+        `Index Finger
+        
+        X: ${index.x.toFixed(3)}
+        Y: ${index.y.toFixed(3)}
+        Z: ${index.z.toFixed(3)}`;
+        }
 }
 
 button.addEventListener("click", async () => {
