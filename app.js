@@ -99,32 +99,65 @@ function drawHands(results) {
         canvas.height
     );
 
+    // TES CANVAS
+    ctx.fillStyle = "#ff0000";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        100,
+        100,
+        20,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
     if (!results.landmarks?.length) {
-        output.textContent = "Tidak ada tangan";
+
+        output.textContent =
+            "Tidak ada tangan";
+
         return;
     }
 
-    const landmarks = results.landmarks[0];
+
+    const landmarks =
+        results.landmarks[0];
+
 
     for (const point of landmarks) {
 
-        const x = point.x * canvas.width;
-        const y = point.y * canvas.height;
+        const x =
+            point.x * canvas.width;
+
+        const y =
+            point.y * canvas.height;
+
 
         ctx.beginPath();
+
+        ctx.fillStyle =
+            "#00ff88";
 
         ctx.arc(
             x,
             y,
-            6,
+            7,
             0,
             Math.PI * 2
         );
 
         ctx.fill();
+
     }
 
-    const index = landmarks[8];
+
+    const index =
+        landmarks[8];
+
 
     output.textContent =
 `Index Finger
