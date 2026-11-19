@@ -1,18 +1,141 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>SIBI</title>
-        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.mjs"
-    crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <div class="kamera">
-        <video id="webcam" autoplay playsinline></video>
-        <canvas id="kanvas"></canvas></div>
-        <script type="module" src="app.js">
-        </script>
-    </body>
+<html lang="jv">
+<head>
+  <meta charset="UTF-8">
+  <title>MyBubub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Yuk main sama Sbubu. Ngga hanya main tapi juga chattingan.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Virtual Pet Chatbot Game">
+  <meta property="og:description" content="Main bareng alien yang imut dan pinter.">
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; line-height: 1.5; }
+    .row { display: flex; gap: 8px; margin-top: 12px; }
+    input { flex: 1; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; }
+    button { padding: 10px 18px; font-size: 16px; cursor: pointer; border: none; background: #222; color: #fff; border-radius: 6px; }
+    button:disabled { background: #999; cursor: not-allowed; }
+    #hasil { margin-top: 20px; padding: 16px; background: #f4f4f5; border-radius: 8px; display: none; }
+    .skor-list { margin-top: 12px; padding-top: 12px; border-top: 1px solid #ddd; font-size: 14px; color: #555; }
+  </style>
+</head>
+<body>
+
+  <h2>Deteksi Perasaan Basa Jawa</h2>
+  <p id="status">Memuat model & dataset CSV...</p>
+
+  <div class="row">
+    <input type="text" id="inputTeks" placeholder="Critakna perasaanmu dina iki..." disabled>
+    <button id="btnKirim" disabled>Kirim</button>
+  </div>
+
+  <div id="hasil">
+    <div><strong>Emosi:</strong> <span id="outLabel"></span> (<span id="outSkor"></span>)</div>
+    <div style="margin-top: 8px;"><strong>Respons:</strong> <span id="outRespons"></span></div>
+    <div class="skor-list" id="outDetail"></div>
+  </div>
+
+  <script type="module">
+    // Langsung import class Nlp
+    import { Nlp } from 'https://esm.sh/@nlpjs/nlp@4.27.0';
+
+    const LANG = 'jv';
+    // Instansiasi langsung menggunakan 'new Nlp()'
+    const nlp = new Nlp({ languages: [LANG], autoSave: false, forceNER: false });
+
+    // Parser CSV murni Vanilla JS
+    function parseCSV(csvText) {
+      const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== '');
+      const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+      const data = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const cols = [];
+        let cur = '', inQuotes = false;
+        for (const char of lines[i]) {
+          if (char === '"') { inQuotes = !inQuotes; }
+          else if (char === ',' && !inQuotes) { cols.push(cur.trim()); cur = ''; }
+          else { cur += char; }
+        }
+        cols.push(cur.trim());
+
+        const row = {};
+        headers.forEach((h, idx) => {
+          row[h] = (cols[idx] || '').replace(/^"|"$/g, '').trim();
+        });
+        data.push(row);
+      }
+      return data;
+    }
+
+    async function initNLP() {
+      const statusEl = document.getElementById('status');
+      try {
+        // 1. Ambil file CSV
+        const response = await fetch('0dataset.csv');
+        if (!response.ok) throw new Error(`HTTP ${response.status} - File CSV ora ketemu`);
+
+        const csvText = await response.text();
+        const rows = parseCSV(csvText);
+        const responsUnik = new Set();
+
+        // 2. Masukkan dataset ke instance Nlp
+        rows.forEach(row => {
+          if (row.text && row.label) {
+            nlp.addDocument(LANG, row.text, row.label);
+
+            if (row.respons && !responsUnik.has(`${row.label}::${row.respons}`)) {
+              nlp.addAnswer(LANG, row.label, row.respons);
+              responsUnik.add(`${row.label}::${row.respons}`);
+            }
+          }
+        });
+
+        // 3. Latih model
+        statusEl.innerText = 'Nglatih model...';
+        await nlp.train();
+
+        statusEl.innerText = `Model siap! (${rows.length} data dilatih)`;
+        document.getElementById('inputTeks').disabled = false;
+        document.getElementById('btnKirim').disabled = false;
+      } catch (err) {
+        statusEl.innerText = 'Error: ' + err.message;
+        console.error(err);
+      }
+    }
+
+    async function prediksi() {
+      const teks = document.getElementById('inputTeks').value.trim();
+      if (!teks) return;
+
+      const hasil = await nlp.process(LANG, teks);
+      document.getElementById('hasil').style.display = 'block';
+
+      if (hasil.intent === 'None' || hasil.score < 0.45) {
+        document.getElementById('outLabel').innerText = 'Netral / Durung paham';
+        document.getElementById('outSkor').innerText = `${(hasil.score * 100).toFixed(1)}%`;
+        document.getElementById('outRespons').innerText = 'Coba critakna luwih jelas maneh ya.';
+      } else {
+        document.getElementById('outLabel').innerText = hasil.intent;
+        document.getElementById('outSkor').innerText = `${(hasil.score * 100).toFixed(1)}%`;
+        document.getElementById('outRespons').innerText = hasil.answer || '(Ora ana respons ning CSV)';
+      }
+
+      if (hasil.classifications?.length) {
+        const detail = hasil.classifications
+          .filter(c => c.intent !== 'None')
+          .map(c => `${c.intent}: ${(c.score * 100).toFixed(1)}%`)
+          .join(' | ');
+        document.getElementById('outDetail').innerText = 'Distribusi Skor: ' + detail;
+      }
+    }
+
+    document.getElementById('btnKirim').addEventListener('click', prediksi);
+    document.getElementById('inputTeks').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') prediksi();
+    });
+
+    initNLP();
+  </script>
+</body>
 </html>
