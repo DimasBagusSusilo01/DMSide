@@ -41,23 +41,23 @@
 
     const LANG = 'jv';
     // Instansiasi langsung menggunakan 'new Nlp()'
-    const nlp = new Nlp({ languages: [LANG], autoSave: false, forceNER: true,
+    const nlp = new Nlp({ languages: [LANG], autoSave: false, forceNER: false,
       nlu: {
     log: true,
-    useNoneFeature: true, // Membantu mendeteksi input di luar konteks (out-of-scope)
+    useNoneFeature: false, // Membantu mendeteksi input di luar konteks (out-of-scope)
   },
   ner: {
     threshold: 0.8, // Batas kemiripan fuzzy matching untuk entitas (0.0 - 1.0)
   } });
 
-  //nlp.settings.nlu = {
+  nlp.settings.nlu = {
   //...nlp.settings.nlu,
-  //maxIterations: 100,     // Default ~50-100. Naikkan jika dataset banyak & loss belum konvergen
-  //learningRate: 0.1,      // Kecepatan belajar (0.05 - 0.2). Kecilkan jika akurasi naik-turun
+  maxIterations: 100,     // Default ~50-100. Naikkan jika dataset banyak & loss belum konvergen
+  learningRate: 0.05,      // Kecepatan belajar (0.05 - 0.2). Kecilkan jika akurasi naik-turun
   //momentum: 0.5,          // Membantu keluar dari local minima saat training
-  //errorThreshold: 0.005,  // Batas error minimum sebelum training berhenti lebih awal
-  //deltaErrorThreshold: 0.0001
-//};
+  errorThreshold: 0.03,  // Batas error minimum sebelum training berhenti lebih awal
+  deltaErrorThreshold: 0.005
+};
 
     // Parser CSV murni Vanilla JS
     function parseCSV(csvText) {
